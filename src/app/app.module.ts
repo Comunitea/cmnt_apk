@@ -16,7 +16,8 @@ import { CardLogComponent} from '../components/card-log/card-log';
 import { NetworkInterface } from '@ionic-native/network-interface/ngx';
 import { SafePipe } from './safe.pipe';
 import { AudioPlayer } from '../providers/audio/audio';
-
+import { File } from '@ionic-native/file';
+import { GoogleMaps } from '@ionic-native/google-maps';
 
 @NgModule({
   declarations: [
@@ -46,10 +47,11 @@ import { AudioPlayer } from '../providers/audio/audio';
     Geolocation,
     OdooProvider,
     NetworkInterface,
-    
+    File,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AudioPlayer,
-    NativeAudio
+    NativeAudio,
+    GoogleMaps,
   ]
 })
 export class AppModule {

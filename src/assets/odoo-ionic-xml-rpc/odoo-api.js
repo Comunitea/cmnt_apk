@@ -40,7 +40,7 @@ function OdooApi (host, db) {
                         resolve(response[0]);
                     } else {
                         odoo_api.odoo_uid = false;
-                        reject(odoo_api.set_error('Error desconocido'))
+                        reject(odoo_api.set_error('Error de usuario/contraseña'))
                     }
                 },
                 error: function(jqXHR, status, error) {

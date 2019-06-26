@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, NavParams, AlertController} from 'ionic-angular';
 import { OdooProvider } from '../../providers/odoo-connector/odoo-connector';
 import { Storage} from '@ionic/storage';
@@ -6,6 +6,16 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { AudioPlayer } from '../../providers/audio/audio';
 //import { InAppBrowser } from '@ionic-native/in-app-browser/ngx'
 import {HomePage} from '../home/home'
+import {
+  GoogleMaps,
+  GoogleMap,
+  GoogleMapsEvent,
+  GoogleMapOptions,
+  CameraPosition,
+  MarkerOptions,
+  Marker
+} from '@ionic-native/google-maps';
+
 
 @Component({
   selector: 'page-list',
@@ -26,8 +36,9 @@ export class ListPage {
   ip: string
   show_gps_info
   last_sign_hour: string
+  map: GoogleMap
 
-  constructor(public player: AudioPlayer, public navCtrl: NavController, private odoo: OdooProvider, private storage: Storage, 
+  constructor(public player: AudioPlayer, public navCtrl: NavController, private odoo: OdooProvider, private storage: Storage,
     public alertCtrl: AlertController, public navParams: NavParams, private geolocation: Geolocation) {
     // If we navigated to this page, we will have an item available as a nav param
     this.state = {'present': 'Presente', 'absent': 'Ausente'}
@@ -91,7 +102,28 @@ export class ListPage {
   }
   open_url(){
     this.player.play('click')
-    window.open(this.get_url_map(this.gps), '_blank'); //Abre la URL dentro de la propia aplicación Cordova)
+    this.geolocation.getCurrentPosition().then((position) => {
+
+//      let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+
+      let mapOptions = {
+        camera: {target : {lat: position.coords.latitude,
+                           lng: position.coords.longitude}},
+        zoom: 20,
+        other_params:"key=AIzaSyBxTb9LsrCPdG3s_OwH3g_nnn_LitbuD5Y"
+      }
+      
+      this.map = GoogleMaps.create('map_canvas', mapOptions);
+
+      this.map.addMarker({
+        title: 'Mi posición',
+        icon: 'blue',
+        animation: 'DROP',
+        position: mapOptions.camera.target
+      })
+      
+    })
   }
 
   presentAlert(titulo, texto) {
