@@ -1,0 +1,7 @@
+{
+  "appId": "io.ionic.starter",
+  "appName": "reg_time_v8",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}

@@ -223,6 +223,7 @@ export class HomePage {
                 console.log(employee)
                 this.storage.set('CONEXION', con).then(()=>{
                   this.storage.set('EMPLEADO', employee).then(()=>{
+                                                              console.log("guardamos empleado");
                     this.navCtrl.setRoot(ListPage, employee);
                   })  
                 })  

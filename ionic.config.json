@@ -1,8 +1,8 @@
 {
   "name": "reg_time_v8",
-  "app_id": "",
-  "type": "ionic-angular",
   "integrations": {
-    "cordova": {}
-  }
+    "cordova": {},
+    "capacitor": {}
+  },
+  "type": "ionic-angular"
 }

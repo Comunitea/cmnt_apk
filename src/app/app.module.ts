@@ -13,7 +13,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { OdooProvider } from '../providers/odoo-connector/odoo-connector';
 import { Geolocation } from '@ionic-native/geolocation';
 import { CardLogComponent} from '../components/card-log/card-log';
-import { NetworkInterface } from '@ionic-native/network-interface/ngx';
+import { NetworkInterface } from '@ionic-native/network-interface';
 import { SafePipe } from './safe.pipe';
 import { AudioPlayer } from '../providers/audio/audio';
 import { File } from '@ionic-native/file';
