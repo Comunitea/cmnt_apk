@@ -24,20 +24,27 @@ export class LogHistoryPage {
   attendances
 
   constructor(public player: AudioPlayer, public navCtrl: NavController, private odoo: OdooProvider, private storage: Storage, public alertCtrl: AlertController, public navParams: NavParams) {
-    
-    
-    this.storage.get('EMPLEADO').then((empleado) => {
-      if (empleado){
-        this.employee = empleado['employee']
-        this.apk = empleado['apk']
-        this.get_attendances()
+
+    let user =  this.navParams.data;
+    if (!user['employee'])
+      {this.storage.get('EMPLEADO').then((empleado) => {
+        if (empleado){
+          this.employee = empleado['employee']
+          this.apk = empleado['apk']
+          this.get_attendances()
+        }
+        else{
+           this.navCtrl.setRoot(HomePage);
+           this.player.play('error')
+        }
+      })
       }
-      else{
-        this.navCtrl.setRoot(HomePage);
-        this.player.play('error')
-      }
-      
-    })
+    else {
+      this.employee = user['employee']
+      this.apk = user['apk']
+      this.get_attendances()
+    }
+    
   }
 
   ionViewDidLoad() {
