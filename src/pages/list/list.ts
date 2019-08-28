@@ -3,6 +3,12 @@ import { NavController, NavParams, AlertController} from 'ionic-angular';
 import { OdooProvider } from '../../providers/odoo-connector/odoo-connector';
 import { Storage} from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation';
+import {
+  BackgroundGeolocation,
+  BackgroundGeolocationConfig,
+  BackgroundGeolocationResponse,
+  BackgroundGeolocationEvents
+} from '@ionic-native/background-geolocation';
 import { AudioPlayer } from '../../providers/audio/audio';
 //import { InAppBrowser } from '@ionic-native/in-app-browser/ngx'
 import {HomePage} from '../home/home'
@@ -37,16 +43,20 @@ export class ListPage {
   show_gps_info
   last_sign_hour: string
   map: GoogleMap
+  user: any
+  logs: string[] = [];
+  company_config: any
 
   constructor(public player: AudioPlayer, public navCtrl: NavController, private odoo: OdooProvider, private storage: Storage,
-    public alertCtrl: AlertController, public navParams: NavParams, private geolocation: Geolocation) {
+    public alertCtrl: AlertController, public navParams: NavParams, private geolocation: Geolocation, private backgroundGeolocation: BackgroundGeolocation) {
     // If we navigated to this page, we will have an item available as a nav param
     this.state = {'present': 'Presente', 'absent': 'Ausente'}
     this.gps = {}
     this.url_map = 'https://maps.google.com'
     this.show_gps_info = false
+    this.user =  this.navParams.data
 
-      
+    console.log(this.user);
   
     
     this.geolocation.getCurrentPosition().then((resp) => {
@@ -62,37 +72,31 @@ export class ListPage {
        console.log('Error getting location', error);
      });
     
-    let user =  this.navParams.data;
-    if (!user['employee'])
-      {this.storage.get('EMPLEADO').then((empleado) => {
-        if (empleado){
-          this.employee = empleado['employee']
-          this.apk = empleado['apk']
-          this.storage.set('APK_IMAGE', this.apk['image'])
-          this.refresh_employee(this.employee['id'])
-        }
-        else{
-           this.navCtrl.setRoot(HomePage);
-           this.player.play('error')
-        }
-      })
-      }
-    else {
-      this.employee = user['employee']
-      this.apk = user['apk']
-      this.refresh_employee(this.employee['id'])
-    }
+    this.storage.get('EMPLEADO').then((empleado) => {
+      if (empleado){
+        console.log("tenemos empleado por storage");
+        this.employee = empleado['employee']
+        this.apk = empleado['apk']
+        this.storage.set('APK_IMAGE', this.apk['image'])
+        this.refresh_employee();
+      } else if (this.user) {
+        this.employee = this.user['employee']
+        this.apk = this.user['apk']
+        this.refresh_employee();
+      } 
+    }).catch((error) => {
+      console.log('Error getting ployee', error);
+      this.player.play('error')
+      this.navCtrl.setRoot(HomePage);
+    });
 
+    this.date = (new Date()).toLocaleString('es-ES', { timeZone: 'UTC' })   
+  }  
 
-
-    console.log(this.employee)
-    //this.get_attendances()
-    // Let's populate this page with some filler content for funzies
-    this.date = (new Date()).toLocaleString('es-ES', { timeZone: 'UTC' })
-  }
   alternate_show_gps_info(){
     this.show_gps_info = !this.show_gps_info
   }
+
   get_url_map(gps){
     let url_ = "https://maps.google.com/?ll=" + gps['latitude'] + "," + gps['longitude']+ ",&z=20"
 
@@ -100,12 +104,10 @@ export class ListPage {
     return url_
     
   }
+
   open_url(){
     this.player.play('click')
     this.geolocation.getCurrentPosition().then((position) => {
-
-//      let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
 
       let mapOptions = {
         camera: {target : {lat: position.coords.latitude,
@@ -135,20 +137,24 @@ export class ListPage {
     alert.present();
   }
 
-
-  refresh_employee(employee_id){
-    let model = 'hr.employee'
+  refresh_employee(){
     let values ={'employee_info': true, 'employee_id': this.employee['id']}
     this.odoo.execute('hr.employee', 'get_employee_info', values).then((employee)=>{
       if (employee){
         this.employee = employee
-        console.log(employee)
+        if (this.employee['state'] == 'present') {
+          this.startBackgroundGeolocation();
+        } else {
+          this.stopBackgroundGeolocation();
+        }
       }
     })
-    .catch(() => {
+    .catch((error) => {
+      console.log(error);
       this.presentAlert('Error!', 'No se pudo recargar el empleado');
     });
   }
+
   check_log(){
     let model = 'hr.employee'
     let values ={'limit': 1, 'employee_id': this.employee['id'], 'gps_info': this.gps}
@@ -162,7 +168,7 @@ export class ListPage {
       else {
         //this.get_attendances()
         this.player.play('check_in')
-        this.refresh_employee(this.employee['id'])
+        this.refresh_employee()
         //this.presentAlert('Log', 'Log correcto')
       }
     })
@@ -193,4 +199,59 @@ export class ListPage {
       item: item
     });
   }
+
+  // background geolocation
+  startBackgroundGeolocation() {
+    this.company_config = [];
+    let values = {'user_id': this.employee['id']}
+    this.odoo.execute('clock.company.apk', 'get_company_apk_config', values).then((atts)=>{
+      this.company_config = atts
+
+      const config: BackgroundGeolocationConfig = {
+        desiredAccuracy: this.company_config['min_accuracity'] || 10,
+        stationaryRadius: this.company_config['stationary_radius'] || 50,
+        distanceFilter: this.company_config['distance_filter'] || 500,
+        debug: true, //  enable this hear sounds for background-geolocation life-cycle.
+        stopOnTerminate: false, // enable this to clear background location settings when the app terminates
+        interval: this.company_config['min_minute']*60 || 60000
+      };
+  
+      this.backgroundGeolocation.configure(config).then(() => {
+        this.backgroundGeolocation
+          .on(BackgroundGeolocationEvents.location)
+          .subscribe((location: BackgroundGeolocationResponse) => {
+            this.sendGPS(location);
+          });
+      });
+      // start recording location
+      this.backgroundGeolocation.start();
+    })
+    .catch(() => {
+      this.presentAlert('Error!', 'No se pudo recuperar la lista de logs contra odoo');
+    });
+
+  }
+
+  sendGPS(location) {
+    if (location.speed == undefined) {
+      location.speed = 0;
+    }      
+
+    let values ={'employee_id': this.employee['id'], 'latitude': this.gps['latitude'] || location.latitude, 'longitude': this.gps['longitude'] || location.longitude}
+    this.odoo.execute('hr.attendance.position', 'insert_position_apk', values)
+      .then(data => {
+        console.log("POST Request is successful ", data);
+        this.backgroundGeolocation.finish(); // FOR IOS ONLY
+        // BackgroundGeolocation.endTask(taskKey);
+      })
+      .catch(error => {
+        this.backgroundGeolocation.finish(); // FOR IOS ONLY
+        console.log(error);
+      });
+  }
+
+  stopBackgroundGeolocation(){
+    this.backgroundGeolocation.stop();
+  }  
+  
 }

@@ -48,6 +48,7 @@ export class HomePage {
 	mensaje = '';
 	login_server = false
 	apk_image
+	company_config: any
 	has_conf: boolean=false
 		constructor(public explorer: File, public plt: Platform,
 								public player: AudioPlayer, public navCtrl: NavController, public navParams: NavParams,
@@ -191,7 +192,10 @@ export class HomePage {
 					this.apk = employee['apk']						
 					this.storage.set('APK_IMAGE', this.apk['image']).then(() => {}).catch(()=>{})
 					document.documentElement.style.setProperty(`--logo_color`, this.apk['logo_color']);
-					this.navCtrl.setRoot(ListPage, employee);
+					
+					this.storage.set('EMPLEADO', employee).then(()=>{
+						this.navCtrl.setRoot(ListPage);
+					})  
 				}	
 			})
 			.catch((error) => {
@@ -203,78 +207,5 @@ export class HomePage {
 			this.presentAlert('Error!', error['error_msg']);
 		});
 
-	}
-
-	check_conexion(con) {	
-		var model = 'res.users'
-		var domain = [['login', '=', con.username]]
-		var fields = ['id', 'login', 'image', 'name', 'company_id']
-		this.odoo.login(con.username, con.password).then ((uid)=>{
-			this.odoo.uid = uid
-			this.odoo.searchRead(model, domain, fields).then((value)=>{
-				var user = {id: null, name: null, image: null, login: null, cliente_id: null, company_id: null};
-				if (value) { 
-					if (!con.user || value[0].id != con.user['id'] || value[0].company_id[0] != con.user['company_id']){
-            user = value[0];
-            con.user = user
-            this.odoo.searchRead('hr.employee', [['user_id', '=', con.user['id']]], this.EMPLOYEE_FIELDS,0,1).then((employee)=>{
-              if (employee){
-								
-                console.log(employee)
-                this.storage.set('CONEXION', con).then(()=>{
-                  this.storage.set('EMPLEADO', employee).then(()=>{
-                                                              console.log("guardamos empleado");
-                    this.navCtrl.setRoot(ListPage, employee);
-                  })  
-                })  
-              }
-            }).catch((error_employee) => {
-							this.cargar =false;
-							this.presentAlert('Error!', 'No se pudo encontrar el empleado asociado al usuario:' + con.username);
-						})
-          }
-				}}).catch(() => {
-				this.cargar =false;
-				this.presentAlert('Error!', 'No se pudo encontrar el usuario:' + con.username);
-			})
-			.catch(() => {
-				this.cargar = false;
-				this.presentAlert('Error!', 'No se pudo encontrar el usuario:' + con.username);
-			});
-		})
-	}
-	
-	check_storage_conexion(borrar){
-		if (borrar){
-			//Borramos el storage y el fichero de configuración
-			this.explorer.removeDir(this.explorer.externalRootDirectory + 'Documents', 'comunitea.reg_time.com')
-			this.storage.clear().then(() => {
-				this.navCtrl.setRoot(HomePage);
-			})
-
-		}	
-		else {
-			//1º miro si está en storage
-			this.storage.get('CONEXION').then((val) => {
-				if (val && val['url']){
-					this.conexion_data = val
-				}
-				else{
-					// 2º miro si está en el fichero
-					
-					this.explorer.readAsText(this.explorer.externalRootDirectory + 'Documents/comunitea.reg_time.com/', 'reg.json').then((txt)=>{
-						//Si está el fichero lo cargo y lo paso a storage
-						this.conexion_data  = JSON.parse(txt)
-						this.storage.set('CONEXION', this.conexion_data).then(() => {
-						}).catch()
-
-						this.presentAlert('OK!', 'Se ha recuperado la conexión del archivo de configuración.');
-					}).catch((error)=>{
-
-						this.presentAlert('Error!', 'No se ha encontrado datos de conexión!');
-					})
-			}
-			})
-		}
 	}
 }

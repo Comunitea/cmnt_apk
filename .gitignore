@@ -3,6 +3,8 @@
 
 *~
 *.sw[mnpcod]
+*.apk
+*.keystore
 *.log
 *.tmp
 *.tmp.*

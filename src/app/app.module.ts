@@ -12,12 +12,14 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { IonicStorageModule } from '@ionic/storage';
 import { OdooProvider } from '../providers/odoo-connector/odoo-connector';
 import { Geolocation } from '@ionic-native/geolocation';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { CardLogComponent} from '../components/card-log/card-log';
 import { NetworkInterface } from '@ionic-native/network-interface';
 import { SafePipe } from './safe.pipe';
 import { AudioPlayer } from '../providers/audio/audio';
 import { File } from '@ionic-native/file';
 import { GoogleMaps } from '@ionic-native/google-maps';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,7 @@ import { GoogleMaps } from '@ionic-native/google-maps';
     StatusBar,
     SplashScreen,
     Geolocation,
+    BackgroundGeolocation,
     OdooProvider,
     NetworkInterface,
     File,
@@ -52,6 +55,7 @@ import { GoogleMaps } from '@ionic-native/google-maps';
     AudioPlayer,
     NativeAudio,
     GoogleMaps,
+    Push,
   ]
 })
 export class AppModule {

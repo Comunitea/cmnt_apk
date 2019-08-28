@@ -22,28 +22,27 @@ export class LogHistoryPage {
   employee: {}
   apk: {}
   attendances
+  user: any
 
   constructor(public player: AudioPlayer, public navCtrl: NavController, private odoo: OdooProvider, private storage: Storage, public alertCtrl: AlertController, public navParams: NavParams) {
 
-    let user =  this.navParams.data;
-    if (!user['employee'])
-      {this.storage.get('EMPLEADO').then((empleado) => {
-        if (empleado){
-          this.employee = empleado['employee']
-          this.apk = empleado['apk']
-          this.get_attendances()
-        }
-        else{
-           this.navCtrl.setRoot(HomePage);
-           this.player.play('error')
-        }
-      })
-      }
-    else {
-      this.employee = user['employee']
-      this.apk = user['apk']
-      this.get_attendances()
-    }
+    this.user =  this.navParams.data;
+    this.storage.get('EMPLEADO').then((empleado) => {
+      if (empleado){
+        console.log("tenemos empleado por storage");
+        this.employee = empleado['employee']
+        this.apk = empleado['apk']
+        this.storage.set('APK_IMAGE', this.apk['image'])
+      } else if (this.user) {
+        this.employee = this.user['employee']
+        this.apk = this.user['apk']
+      } 
+      this.get_attendances();
+    }).catch((error) => {
+      console.log('Error getting ployee', error);
+      this.player.play('error')
+      this.navCtrl.setRoot(HomePage);
+    });
     
   }
 
@@ -58,19 +57,18 @@ export class LogHistoryPage {
     });
     alert.present();
   }
-get_attendances(){
-  let model = 'hr.attendance'
-  let values = {'limit': 14, 'employee_id': this.employee['id']}
-  
-  this.odoo.execute(model, 'get_logs', values).then((atts)=>{
-    console.log(atts)
-    this.attendances = atts 
-    this.player.play('ok')
-  })
-  .catch(() => {
-    this.player.play('error')
-    this.presentAlert('Error!', 'No se pudo recuperar la lista de logs contra odoo');
-  });
+  get_attendances(){
+    let model = 'hr.attendance'
+    let values = {'limit': 14, 'employee_id': this.employee['id']}
+    
+    this.odoo.execute(model, 'get_logs', values).then((atts)=>{
+      this.attendances = atts 
+      this.player.play('ok')
+    })
+    .catch(() => {
+      this.player.play('error')
+      this.presentAlert('Error!', 'No se pudo recuperar la lista de logs contra odoo');
+    });
 
-}
+  }
 }
