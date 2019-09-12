@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "reg_time_v8",
+  "appId": "comunitea.reg.clock",
+  "appName": "Control Horario",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www"

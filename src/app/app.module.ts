@@ -18,8 +18,7 @@ import { NetworkInterface } from '@ionic-native/network-interface';
 import { SafePipe } from './safe.pipe';
 import { AudioPlayer } from '../providers/audio/audio';
 import { File } from '@ionic-native/file';
-import { GoogleMaps } from '@ionic-native/google-maps';
-import { Push, PushObject, PushOptions } from '@ionic-native/push';
+import { Push } from '@ionic-native/push';
 
 @NgModule({
   declarations: [
@@ -54,7 +53,6 @@ import { Push, PushObject, PushOptions } from '@ionic-native/push';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AudioPlayer,
     NativeAudio,
-    GoogleMaps,
     Push,
   ]
 })

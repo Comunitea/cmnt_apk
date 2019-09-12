@@ -7,7 +7,6 @@ import { ListPage } from '../list/list';
 import { AudioPlayer } from '../../providers/audio/audio';
 
 import { File } from '@ionic-native/file';
-import { ReturnStatement } from '@angular/compiler';
 declare var odoo_cfg: any;
 
 @Component({
@@ -158,7 +157,7 @@ export class HomePage {
 		
  		this.storage.set('CONEXION', this.get_storage_conexion()).then(() => {
 			
-				this.load_user(this.conexion_data, this.conexion_user)})
+			this.load_user(this.conexion_data, this.conexion_user)})
 			
 		}
 

@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { IonicPage, NavController} from 'ionic-angular';
 /**
  * Generated class for the CardLogComponent component.
  *
@@ -18,7 +17,7 @@ export class CardLogComponent {
   @Input() apk: {}
   @Output() notify: EventEmitter <Boolean> = new EventEmitter<Boolean>();
 
-  constructor(private navCtrl:NavController, ) {
+  constructor() {
    
   }
 
