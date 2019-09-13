@@ -17,6 +17,11 @@ Se puede ejecutar con ionic serve pero a veces el navegador no ejecutará cordov
 - ionic cordova prepare browser
 - ionic cordova run browser
 
+### Npm audit
+- Si existe algún problema con las dependencias se mostrará un mensaje para revisarlos con npm audit.
+- Puedes instalar las versiones que te proponga de las dependencias pero revisando tras la instalación que no crean un conflicto con otras.
+- Si hay conflicto tendrás que hacer npm uninstall de lo que hayas metido.
+
 ### Generar apk para Android
 - Creamos la plataforma si no lo hemos hecho ya:
 ```
@@ -30,7 +35,7 @@ $ ionic cordova prepare android
 ```
 $ ionic cordova build --release android
 ```
--Generamos keystore si no tenemos:
+- Generamos keystore si no tenemos:
 ```
 $ keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
 ```
@@ -44,25 +49,50 @@ $ zipalign -v 4 Myapp-release-unsigned.apk MyappName.apk
 ```
 
 ### Generar app para iOS
-Instalar capacitor si no se tiene.
+- Instalamos capacitor/ios:
+```
+$ npm install @capacitor/ios
+```
 - Instalamos pods:
 ```
 $ sudo gem install cocoapods
-```
-- Creamos la plataforma si no lo hemos hecho ya:
-```
-$ ionic capacitor add ios
 ```
 - Creamos los iconos e imágenes de la app:
 ```
 $ ionic cordova resources ios
 ```
-- Copiamos los archivos generados en la carpeta ios/App/App/Assets.xcassets
+- Ejecutamos un "ionic cordova prepare ios" para que se genere el contenido de /www
+- Creamos la plataforma si no lo hemos hecho ya:
+```
+$ ionic capacitor add ios
+```
+o
+```
+$ npx cap add ios
+```
+- Copiamos los archivos de resources generados en la carpeta ios/App/App/Assets.xcassets si no ha creado los iconos correctos.
 - Actualizamos el proyecto si hemos hecho cambios:
 ```
 $ ionic capacitor copy ios
 ```
+o
+
+```
+$ npx cap copy ios
+```
 - Arrancamos el proyecto en Xcode (se puede usar open o run):
 ```
 $ ionic capacitor open ios
+```
+o
+```
+$ npx cap open ios
+```
+- Actualizar proyecto
+```
+$ npx cap update ios
+```
+- Copy + Update
+```
+$ npx cap sync ios
 ```
