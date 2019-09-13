@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="comunitea.reg.clock" version="1.1.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Control Horario</name>
+<widget id="comunitea.reg.clock" version="1.1.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Control de fichaje</name>
     <description>Aplicación para control horario.</description>
     <author email="info@comunitea.com" href="http://www.comunitea.com/">Comunitea Servicios Tecnológicos, S.L.</author>
     <content src="index.html" />

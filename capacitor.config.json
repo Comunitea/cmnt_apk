@@ -1,6 +1,6 @@
 {
   "appId": "comunitea.reg.clock",
-  "appName": "Control Horario",
+  "appName": "Control de fichaje",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www"

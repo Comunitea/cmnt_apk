@@ -1,6 +1,6 @@
 {
-  "name": "Ionic",
-  "short_name": "Ionic",
+  "name": "Control de fichaje",
+  "short_name": "Control de fichaje",
   "start_url": "index.html",
   "display": "standalone",
   "icons": [{
