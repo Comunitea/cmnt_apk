@@ -11,7 +11,7 @@
     </ion-row>
 
     <ion-row>
-      <ion-col col-4>
+      <ion-col col-3>
         <button ion-button icon-start clear color="sucess" small>
         
           <ion-icon color="log_in" name="log-in"></ion-icon>
@@ -21,7 +21,7 @@
         </button>
 
       </ion-col>
-      <ion-col col-4>
+      <ion-col col-3>
         <button ion-button icon-start clear color="warning" small>
          <ion-icon color="log_out" name="log-out"></ion-icon>
          <ion-icon [hidden]="!card.gps_out" color="log_out" name="locate"></ion-icon>
@@ -30,8 +30,14 @@
       </ion-col>
       
         
-      <ion-col col-4 align-self-center text-center >
+      <ion-col col-3 align-self-center text-center >
         <ion-badge class="log_badge">{{card.worked_hours}}h</ion-badge>
+      </ion-col>
+
+      <ion-col col-3 align-self-center text-center >
+        <a href="#" *ngIf="card.google_maps_url" (click)="open_map_url(card.google_maps_url)">
+          Ver ruta
+        </a>
       </ion-col>
     </ion-row>
 
