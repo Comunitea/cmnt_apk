@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Control de fichaje
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,12 +9,72 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">Control de fichaje - Login</ion-title>
     </ion-toolbar>
   </ion-header>
 
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <form (ngSubmit)="this.conectarApp()">
+      <ion-grid text-center>
+        <ion-row>
+          <ion-col width-100>
+            <div style="text-align: center">
+              <img *ngIf="!apk_image" style="height: 100px" src="assets/imgs/logo.png" alt="Warehouse APP" />
+              
+              <img *ngIf="apk_image" style="text-align: center; width: 100px; height: 100px;" src="data:image/jpeg;base64,{{apk_image}}"/>
+                
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col width-100>
+          
+          <ion-list *ngIf="!cargar">
+            <ion-item>
+              <ion-input label="Usuario" [(ngModel)]="conexion_user.username" name="username" [clearInput]="true" placeholder="Ingresa usuario" value=""></ion-input>
+            </ion-item>
+  
+            <ion-item>
+              <ion-input label="Contraseña" [(ngModel)]="conexion_user.password" type="password" name="password" placeholder="Ingresa contraseña"></ion-input>
+            </ion-item>
+  
+          </ion-list>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col width-100>
+            <button ion-button full type="submit">
+              <span class="custom-font-size">Acceder</span>
+            </button>
+  
+          </ion-col>
+        </ion-row>
+        <ion-row >
+            <ion-col width-100>
+              <ion-item>
+                  <ion-toggle [(ngModel)]="login_server" name="login_server" [ngModelOptions] = {standalone:true}>Servidor</ion-toggle>
+              </ion-item>     
+            </ion-col>
+          </ion-row>
+        <ion-row >
+          <ion-col width-100>
+            <ion-list *ngIf="!cargar && login_server" >
+              <ion-item>
+                <ion-input label="URL" [(ngModel)]="conexion_data.url" required name='url' placeholder="Ingresa url"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-input label="Base de datos" [(ngModel)]="conexion_data.db" required name='db' placeholder="Ingresa base de datos"></ion-input>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+  
+      <div *ngIf="cargar" style="text-align: center">
+        <ion-spinner name="circles"></ion-spinner>
+        <br>
+        <b>Verificando...</b>
+      </div>
+    </form>
   </div>
 </ion-content>

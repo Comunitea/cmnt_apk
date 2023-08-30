@@ -1,0 +1,51 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)='attendance_history()'>
+        <ion-icon name="calendar-number-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      Registro de entrada/salida
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)='inicio()'>
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div id="container">
+    <div *ngIf="loading_location" style="text-align: center">
+      <ion-spinner name="circles"></ion-spinner>
+      <br>
+      <b>Cargando datos de localización.</b>
+      <br>
+      <p>Puede llevar un tiempo. Asegúrate de que tu localización está activada.</p>
+    </div>
+    <ion-card *ngIf="apk && employee" [color]="employee['state']">
+      <ion-card-header>
+        <ion-card-title><img *ngIf="apk && apk['image']" style="text-align: center; width: 80px; height: 80px;"  class="img-b64-content" src="data:image/jpeg;base64,{{apk && apk['image']}}"/></ion-card-title>
+        <ion-card-subtitle>{{employee && employee['name']}}</ion-card-subtitle>
+      </ion-card-header>
+    
+      <ion-card-content>
+        <div *ngIf="gps['accuracity']">
+          Precisión: {{gps['accuracity']}} m.
+        </div> 
+        <div *ngIf="!gps['accuracity']">NO GPS</div>
+      </ion-card-content>
+    
+      <button [hidden]="employee['state']=='present'" color="log_in" ion-button icon-start clear (click)='check_log()'>
+        <ion-icon color="log_in" name="log-in"></ion-icon>
+         <ion-label>Entrada</ion-label>
+      </button>
+      <button [hidden]="employee['state']!='present'" color="log_out" ion-button icon-start clear (click)='check_log()'>
+       <ion-icon color="log_out" name="log-out"></ion-icon>
+          <ion-label>H. entrada: {{ last_sign_hour }} >> Salida</ion-label>
+      </button>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,19 @@
+page-list {
+  ion-row{
+    #map_canvas {
+      background: rgb(229, 227, 223);
+      width: 200px;
+      height: 200px;
+      opacity: 0;
+      transition: opacity 150ms ease-in;
+      display: block;
+      &.show-map{
+        opacity: 1;
+      }
+    }
+  }
+}
+
+#container {
+  text-align: center;
+}

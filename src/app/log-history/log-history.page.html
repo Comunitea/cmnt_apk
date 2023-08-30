@@ -1,0 +1,53 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)='page_list()'>
+        <ion-icon name="arrow-undo-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Registro de accesos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)='inicio()'>
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card *ngFor="let card of attendances">
+  
+    <ion-row>
+      <ion-col text-center>
+      <h2>{{card.day}}</h2>
+       
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col col-4>
+        <button ion-button icon-start clear color="sucess" small>
+        
+          <ion-icon color="log_in" name="log-in"></ion-icon>
+          <ion-icon [hidden]="!card.gps_in" color="log_in" name="locate"></ion-icon>
+          <div color="log_in" >{{card.log_in_hour}}</div>
+          
+        </button>
+
+      </ion-col>
+      <ion-col col-4>
+        <button ion-button icon-start clear color="warning" small>
+         <ion-icon color="log_out" name="log-out"></ion-icon>
+         <ion-icon [hidden]="!card.gps_out" color="log_out" name="locate"></ion-icon>
+          <div>{{card.log_out_hour}}</div>
+        </button>
+      </ion-col>
+      
+        
+      <ion-col col-4 align-self-center text-center >
+        <ion-badge class="log_badge">{{card.worked_hours}}h</ion-badge>
+      </ion-col>
+    </ion-row>
+
+</ion-card>
+</ion-content>

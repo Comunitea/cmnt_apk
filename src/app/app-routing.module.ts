@@ -11,6 +11,14 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
+  {
+    path: 'page-list',
+    loadChildren: () => import('./page-list/page-list.module').then( m => m.PageListPageModule)
+  },
+  {
+    path: 'log-history',
+    loadChildren: () => import('./log-history/log-history.module').then( m => m.LogHistoryPageModule)
+  },
 ];
 
 @NgModule({
