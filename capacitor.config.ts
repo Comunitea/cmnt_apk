@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'comunitea.reg.clock',
   appName: 'control-de-fichaje',
   webDir: 'www',
   server: {
